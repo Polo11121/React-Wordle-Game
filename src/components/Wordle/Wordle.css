@@ -1,0 +1,33 @@
+.wordle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-direction: column;
+}
+
+.wordle-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+}
+
+.wordle-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid gray;
+  font-size: 2rem;
+}
+
+.cell-correct-position {
+  border-color: green;
+  color: green;
+}
+
+.cell-correct-letter {
+  border-color: yellow;
+  color: yellow;
+}
