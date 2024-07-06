@@ -17,6 +17,8 @@ type Wordle = {
 type InitialState = {
   wordle: Wordle[][];
   onType: (e: KeyboardEvent | { key: string }) => void;
+  isGameFinished: boolean;
+  randomWord: string;
 };
 
 const INITIAL_STATE: InitialState = {
@@ -28,6 +30,8 @@ const INITIAL_STATE: InitialState = {
     }))
   ),
   onType: () => {},
+  isGameFinished: false,
+  randomWord: "",
 };
 
 const REGEX = /^[a-zA-Z]$/;
@@ -40,12 +44,7 @@ export const WordleProvider = ({ children }: { children: ReactNode }) => {
   const [wordle, setWordle] = useState<Wordle[][]>(INITIAL_STATE.wordle);
   const { randomWord } = useGetRandomWord();
 
-  const isGameWon = useMemo(
-    () =>
-      currentRow > 0 &&
-      wordle[currentRow - 1]?.every((cell) => cell.correctPosition),
-    [wordle, currentRow]
-  );
+  const isGameFinished = useMemo(() => currentRow === 6, [currentRow]);
 
   const updateWordle = (rowNumber: number, colNumber: number, guess: string) =>
     setWordle((prevWordle) =>
@@ -89,7 +88,7 @@ export const WordleProvider = ({ children }: { children: ReactNode }) => {
 
   const onType = useCallback(
     (e: KeyboardEvent | { key: string }) => {
-      if (isGameWon) {
+      if (isGameFinished) {
         return;
       }
 
@@ -113,7 +112,7 @@ export const WordleProvider = ({ children }: { children: ReactNode }) => {
       updateWordle(currentRow, currentCol, e.key);
       setCurrentCol((prevCol) => prevCol + 1);
     },
-    [currentRow, currentCol, checkWords, isGameWon]
+    [currentRow, currentCol, checkWords, isGameFinished]
   );
 
   useEffect(() => {
@@ -126,8 +125,10 @@ export const WordleProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       wordle,
       onType,
+      isGameFinished,
+      randomWord,
     }),
-    [wordle, onType]
+    [wordle, onType, randomWord, isGameFinished]
   );
 
   return (
